@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Keamanan Ujian Online by: Aahedi</title>
+<style>
+label{ display: block; }
+input[type=submit]{ margin-top: 15px; }
+#result {font-weight:bold}
+label{float:left}
+</style>
+</head>
+<body>
+<div class='container'>
+<h3>Peringatan!</h3>
+<p>Halaman ini dilengkapi sistem keamanan untuk merekam aktifitas kecurangan.<br>
+Jika Anda membuka halaman lain saat ujian berlangsung maka Anda akan kena skor.<br>
+Jangan meng-klik apapun selain tombol jawaban di halaman ini saat ujian sudah dimulai.<br>
+</p>
+Mulai Ujian?
+<form action="">
+  <label for="stop">Stop</label><input type="radio" name="ujian" value="0" id="stop" checked/><br>
+  <label for="start">Start</label><input type="radio" name="ujian" id="start" value="1"/><br>
+</form>
+<br>
+</div>
+<div id='result'></div><br>
+<button id="clear">Clear</button>
+
+<script type='text/javascript'>
+ 
+ window.addEventListener('blur', nyontek);
+ function nyontek() {
+    //var val = document.getElementById("myInput").value;
+	if(document.getElementById('start').checked) {
+    changeClick('nyontek',1);
+	showNum();
+	}
+ }
+ 
+ // This is the number of clicks so far
+var clicks = {};
+// If a value is already present, assign clicks to that
+if (localStorage.clicks) {
+    clicks = JSON.parse(localStorage.clicks);    
+}
+
+function showNum() {
+    var text = [];
+    // Loop through each key in clicks
+    for (var key in clicks) {
+        text.push("Diduga '" + key + "' " + clicks[key] + " kali");
+    }
+    document.getElementById("result").innerHTML = text.join("<br>");
+}
+
+// Changes click by some amount
+function changeClick(click, amount) {
+    if (typeof (Storage) !== "undefined") {
+        if (typeof clicks[click] !== "undefined") {
+            clicks[click] += amount;
+        } else {
+            clicks[click] = 1;
+        }
+        // Change clicks into a string format and save it to localStorage
+        localStorage.clicks = JSON.stringify(clicks);
+        // Update result
+        showNum();
+    } else {
+        document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
+    }
+}
+
+document.getElementById("clear").addEventListener("click", function() {
+	document.getElementById('stop').checked=true;
+	localStorage.removeItem('clicks');
+	document.getElementById("result").innerHTML='';
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+showNum();
+ })
+</script>
+</body>
+
+</html>
